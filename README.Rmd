@@ -1,0 +1,33 @@
+# DS202_Final
+Repo for DS202 final project
+
+```{r}
+library(dplyr)
+library(tidyverse)
+```
+
+The data we are using is the CO2 emissions by country dataset. This data set
+tracked CO2 emission from different countries in the world from 1750 until 2022.
+
+```{r}
+df <- read.csv("CO2 emission by countries.csv")
+head(df)
+length(df)
+nrow(df)
+summary(df)
+```
+There are 9 columns- country, code, calling code, year, Co2 emissions in tons,
+population as of 2022, area, percent of world, and density in km2.
+
+Country is the name of the country. Code is the country's abbreviation. Calling
+code is the area code in a phone number. Year is the year the data was observed.
+CO2 emissions in tons is the recorded amount of CO2 emissions by the country for
+that year. Population is the number of people living in the country. Area is the 
+size of the country in kilometers squared. Percent of world is how much of the
+Earth the country takes up. Density in km2 is the density according to the area.
+
+There are 59620 rows of data.
+
+```{r}
+drop_na(df)
+```
