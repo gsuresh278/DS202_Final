@@ -31,3 +31,36 @@ There are 59620 rows of data.
 ```{r}
 drop_na(df)
 ```
+
+```{r}
+# checking for missing values
+sum(is.na(df))
+# removing rows with any missing values
+df_clean <- na.omit(df)
+#provides the structure of the dataframe, showing data types and the first few values of each variable, used for understanding the data types of each column
+print("Structure: ")
+str(df)
+print()
+# returns the names of the columns in the dataframe
+print("Column names: ")
+colnames(df)
+print()
+#returns the class of the object
+print("class: ")
+sapply(df, class)
+print()
+# returns the number of unique values for each variable in the dataframe. Helps with understanding the cardinality of each variable
+print("unique values: ")
+sapply(df, function(x) length(unique(x)))
+print()
+# remove duplicate rows
+df_unique <- unique(df)
+print()
+# computes the correlation matrix for the numeric variables in the dataframe. Helps with understanding the relationships between different variables
+print("correlation matrix: ")
+numeric_df <- df[sapply(df, is.numeric)]
+cor_matrix <- cor(numeric_df)
+print()
+
+
+```
