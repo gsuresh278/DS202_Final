@@ -1,9 +1,3 @@
----
-editor_options: 
-  markdown: 
-    wrap: 72
----
-
 # DS202_Final
 
 Repo for DS202 final project
@@ -12,6 +6,10 @@ Repo for DS202 final project
 library(dplyr)
 library(tidyverse)
 ```
+
+Title: Changes in CO2 Emission Over Time
+Members: Katherine Amundson, Kendra Scace, Gautham Suresh
+
 
 The data we are using is the CO2 emissions by country dataset. This data
 set tracked CO2 emission from different countries in the world from 1750
