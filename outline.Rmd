@@ -10,3 +10,26 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 # Outline of Exploration
+
+show the about of CO2 emissions overtime 
+  top 20, 50, 100 emissions
+    overall 
+    and in a range
+  
+  also do lowest amount 
+  
+  find the year with the greatest 
+  
+  
+  time vs CO2 emissions 
+  
+  Visualize and Analysis
+    Global cumulative CO2 emissions (all time)
+      top 10, 20, 50
+  
+  Determine how many people are in each country
+    see how that relates to their countries emissions 
+  
+  CO2 Emission / the people 
+    maybe pick a certain year?
+    

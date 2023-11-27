@@ -13,6 +13,13 @@ library(dplyr)
 library(tidyverse)
 ```
 
+<<<<<<< HEAD
+=======
+Title: Changes in CO2 Emissions Over Time
+Members: Katherine Amundson, Kendra Scace, Gautham Suresh
+
+
+>>>>>>> 3c37dbc5b4c7aac651e585078f1f65bb9c4231b4
 The data we are using is the CO2 emissions by country dataset. This data
 set tracked CO2 emission from different countries in the world from 1750
 until 2022.
@@ -67,3 +74,12 @@ numeric_df <- df[sapply(df, is.numeric)]
 cor_matrix <- cor(numeric_df)
 print(cor_matrix)
 ```
+
+**Questions to be addressed**
+
+-   Are currently developing countries polluting at rates similar to
+    countries that industrialized earlier
+-   Have developed countries taken strides towards reducing pollution in
+    the past decade?
+-   Have international agreements made any observable impact on
+    emissions for participating countries?
