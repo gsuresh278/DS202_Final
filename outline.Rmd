@@ -19,7 +19,14 @@ This data set contains the CO2 emissions by country from 1750 to 2022. This outl
 
 -   Analyze trends in top and low CO2 emissions
 -   Explore correlations between CO2 emissions, population, and other variables
--   Answer the questions in the README
+
+**Questions to be addressed**
+
+-   Are currently developing countries polluting at rates similar to countries that industrialized earlier
+
+-   Have developed countries taken strides towards reducing pollution in the past decade?
+
+-   Have international agreements made any observable impact on emissions for participating countries?
 
 ## Visualization and Reporting
 
@@ -34,7 +41,7 @@ This data set contains the CO2 emissions by country from 1750 to 2022. This outl
 
 **co2_top100:** top 100 CO2 emissions overtime
 
-show the about of CO2 emissions overtime top 20, 50, 100 emissions overall and in a range
+**show the about of CO2 emissions overtime top 20, 50, 100 emissions overall and in a range**
 
 **co2_low20:** lowest 20 CO2 emissions overtime
 
