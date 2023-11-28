@@ -9,27 +9,51 @@ output: word_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-# Outline of Exploration
+# Outline of Exploration: CO2 Emissions by Country
 
-show the about of CO2 emissions overtime 
-  top 20, 50, 100 emissions
-    overall 
-    and in a range
-  
-  also do lowest amount 
-  
-  find the year with the greatest 
-  
-  
-  time vs CO2 emissions 
-  
-  Visualize and Analysis
-    Global cumulative CO2 emissions (all time)
-      top 10, 20, 50
-  
-  Determine how many people are in each country
-    see how that relates to their countries emissions 
-  
-  CO2 Emission / the people 
-    maybe pick a certain year?
-    
+## Introduction
+
+This data set contains the CO2 emissions by country from 1750 to 2022. This outline provides a structured approach to exploring and analyzing the CO2 emissions data set, addressing specific questions and creating variables for a more in-depth investigation. Adjustments can be made based on the actual findings and insights during the exploration.
+
+## Data Analysis and Interpretation
+
+-   Analyze trends in top and low CO2 emissions
+-   Explore correlations between CO2 emissions, population, and other variables
+-   Answer the questions in the README
+
+## Visualization and Reporting
+
+-   Create visualizations for insights gained in the analysis above
+-   Summarize findings in a clear and understandable way
+
+## Variables and their descriptions
+
+**co2_top20:** top 20 CO2 emissions overtime
+
+**co2_top50:** top 50 CO2 emissions overtime
+
+**co2_top100:** top 100 CO2 emissions overtime
+
+show the about of CO2 emissions overtime top 20, 50, 100 emissions overall and in a range
+
+**co2_low20:** lowest 20 CO2 emissions overtime
+
+**co2_low20:** lowest 50 CO2 emissions overtime
+
+**co2_low20:** lowest 100 CO2 emissions overtime
+
+**greatest_CO2_year:** year with the highest CO2 emissions
+
+**time_vs_CO2:** time vs CO2 emissions, this will be used mainly for graphs
+
+**people_per_country:** This will show how many people are each country so we can see how that relates to their countries emissions
+
+**Go throughout the centuries and compare the CO2 emissions to population:**
+
+**18th_century:** CO2 emissions to population in 18th century
+
+**19th_century:** CO2 emissions to population in 19th century
+
+**20th_century:** CO2 emissions to population in 20th century
+
+**21st_century:** CO2 emissions to population in 21st century
