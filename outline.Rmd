@@ -1,6 +1,6 @@
 ---
 title: "outline"
-author: "Kat Amundson"
+author: "Kat Amundson, Kendra Scace"
 date: "2023-11-27"
 output: word_document
 ---
@@ -19,6 +19,7 @@ This data set contains the CO2 emissions by country from 1750 to 2022. This outl
 
 -   Analyze trends in top and low CO2 emissions
 -   Explore correlations between CO2 emissions, population, and other variables
+-   Make sure data is cleaned appropriately
 
 **Questions to be addressed**
 
@@ -32,6 +33,7 @@ This data set contains the CO2 emissions by country from 1750 to 2022. This outl
 
 -   Create visualizations for insights gained in the analysis above
 -   Summarize findings in a clear and understandable way
+-   Utilize ggplot2 to make visualizations that contribute to analysis
 
 ## Variables and their descriptions
 
