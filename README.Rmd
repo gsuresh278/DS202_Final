@@ -142,3 +142,27 @@ agreements_years <- ggplot(countries_agreements, aes(x = Year, y = CO2.emission.
 agreements_years + geom_vline(xintercept=1997)
 agreements_years + geom_vline(xintercept=2015)
 ```
+
+```{r}
+largest_emissions <- df%>% 
+  filter(Year == 2020) %>%
+  slice_max(CO2.emission..Tons., n = 10)
+
+print(largest_emissions)
+
+most_emissions_graph<-ggplot(largest_emissions, aes(x=Country, y=CO2.emission..Tons., col=Country)) +
+  geom_point(size = 5)
+
+print(most_emissions_graph)
+```
+
+```{r}
+emissions_2020 <- df %>%
+  filter(Year==2020) %>%
+  slice_max(Population.2022., n = 20)
+
+highest_population_emissions<-ggplot(emissions_2020, aes(x=Country, y=CO2.emission..Tons., col=Country)) +
+  geom_point(size = 5)
+
+print(highest_population_emissions)
+```
