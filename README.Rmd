@@ -80,3 +80,50 @@ print(cor_matrix)
     the past decade?
 -   Have international agreements made any observable impact on
     emissions for participating countries?
+    
+
+```{r}
+unique_countries <- unique(df$Country)
+
+print(unique_countries)
+```
+
+```{r}
+df %>%
+  filter(CO2.emission..Tons. != 0)
+```
+```{r}
+min_year_data <- df %>%
+  group_by(Country) %>%
+  filter(CO2.emission..Tons. != 0) %>%
+  summarise(Min_Year = min(Year),
+            CO2_Emission = CO2.emission..Tons.[which.min(Year)])
+
+print(min_year_data)
+```
+```{r}
+selected_countries <- min_year_data %>%
+  filter(Min_Year < 1900)
+
+selected_df <- df %>%
+  filter(Country %in% selected_countries$Country)
+
+print(length(unique(selected_df$Country)))
+
+ggplot(selected_df, aes(x = Year, y = CO2.emission..Tons., color = Country)) +
+  geom_line() +
+  labs(title = "CO2 Emissions of Countries with Min Year < 1900",
+       x = "Year",
+       y = "CO2 Emission (Tons)") +
+  theme_minimal()
+```
+
+```{r}
+population_threshold <- 75000000  # 100 million
+
+large_countries <- df %>%
+  filter(Population.2022. > population_threshold)
+
+print(large_countries)
+```
+
