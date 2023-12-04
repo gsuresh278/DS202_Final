@@ -127,3 +127,18 @@ large_countries <- df %>%
 print(large_countries)
 ```
 
+```{r}
+countries_agreements <- large_countries %>%
+  filter(Year > 1985)
+
+head(countries_agreements)
+
+agreements_years <- ggplot(countries_agreements, aes(x = Year, y = CO2.emission..Tons., color = Country)) +
+  geom_line() +
+  labs(title = "CO2 Emissions Compared to Dates of International Agreements",
+       x = "Year",
+       y = "CO2 Emission (Tons)") +
+  theme_minimal()
+agreements_years + geom_vline(xintercept=1997)
+agreements_years + geom_vline(xintercept=2015)
+```
