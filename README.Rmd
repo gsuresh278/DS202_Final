@@ -119,7 +119,7 @@ ggplot(selected_df, aes(x = Year, y = CO2.emission..Tons., color = Country)) +
 ```
 
 ```{r}
-population_threshold <- 75000000  # 100 million
+population_threshold <- 75000000  # 75 million
 
 large_countries <- df %>%
   filter(Population.2022. > population_threshold)
@@ -166,3 +166,7 @@ highest_population_emissions<-ggplot(emissions_2020, aes(x=Country, y=CO2.emissi
 
 print(highest_population_emissions)
 ```
+```{r}
+
+```
+
