@@ -35,6 +35,7 @@ We utilized a comprehensive dataset on CO2 emissions by country from
 emissions, population, area, and relevant codes. After loading the data,
 we conducted data cleaning to handle missing values and ensure the
 dataset's integrity.
+
 ```{r}
 df <- read.csv("CO2 emission by countries.csv")
 head(df)
@@ -341,8 +342,12 @@ ggplot(merged_data, aes(x = long, y = lat, group = group, fill = CO2.emission..T
   theme_map()
 
 ```
-*The map provides a visual representation of the global distribution of CO2 emissions, allowing for the identification of regions or countries with notable emission levels. Patterns and concentrations of high or low emissions can be observed, providing insights into the geographical variations of carbon dioxide output*
 
+*The map provides a visual representation of the global distribution of
+CO2 emissions, allowing for the identification of regions or countries
+with notable emission levels. Patterns and concentrations of high or low
+emissions can be observed, providing insights into the geographical
+variations of carbon dioxide output*
 
 ```{r}
 valid_country_codes <- df %>%
@@ -376,8 +381,11 @@ ggplot(china_us_data, aes(x = Year, y = CO2.emission..Tons., color = Country)) +
        y = "CO2 Emissions (Tons)",
        color = "Country")
 ```
-*Comparing CO2 US and China for the past 60 years shows a general trend where the emissions rate for China is climbing faster than the US. This lines up with historical context as companies tend to move manufacturing plants to countries with looser labor laws and restrictions.* 
 
+*Comparing CO2 US and China for the past 60 years shows a general trend
+where the emissions rate for China is climbing faster than the US. This
+lines up with historical context as companies tend to move manufacturing
+plants to countries with looser labor laws and restrictions.*
 
 ### [Factors Influencing Emissions in the United States]{.smallcaps}
 
@@ -463,7 +471,9 @@ ggplot(us_data, aes(x = NY.GDP.MKTP.KD, y = CO2.emission..Tons.)) +
        x = "GDP",
        y = "CO2 Emissions (Tons)")
 ```
-*This graph higlights a trend where an increase in GDP contributes to increased C02 emissions*
+
+*This graph higlights a trend where an increase in GDP contributes to
+increased C02 emissions*
 
 ### CO2 Emissions Comparison
 
@@ -693,7 +703,6 @@ developing_countries <- df_categorized %>%
 
 ```
 
-
 ```{r}
 emissions_2020 <- df_categorized %>%
   filter(Year == 2020)
@@ -729,6 +738,12 @@ developing_plot <- ggplot(top_developing, aes(x = reorder(Country, -CO2.emission
 print(developed_plot)
 print(developing_plot)
 ```
+
+*India is 2nd to China in terms of CO2 emissions. As more companies
+attempt to gain a foothold in India for setting up manufacturing plants,
+it would be interesting to see in the future whether India's CO2
+emissions rise as China's falls*
+
 ```{r}
 emissions_2020_excluded <- anti_join(emissions_2020, top_developed, by = c("Country", "development_status"))
 emissions_2020_excluded <- anti_join(emissions_2020_excluded, top_developing, by = c("Country", "development_status"))
@@ -742,8 +757,13 @@ ggplot(emissions_2020_excluded, aes(x = GDP_per_capita, y = CO2.emission..Tons.,
        color = "Development Status")
 
 ```
-*Analyzing the relationship between GDP (Per Capita) and CO2 emissions while distinguishing between developing and developed countries offers insights into the impact of climate agreements. Traditionally, nations with higher GDP have often taken the lead in establishing and adhering to climate goals, a trend that aligns with the observations depicted in the plot.*
 
+*Analyzing the relationship between GDP (Per Capita) and CO2 emissions
+while distinguishing between developing and developed countries offers
+insights into the impact of climate agreements. Traditionally, nations
+with higher GDP have often taken the lead in establishing and adhering
+to climate goals, a trend that aligns with the observations depicted in
+the plot.*
 
 ## [[**Conclusion**]{.underline}]{.smallcaps}
 
