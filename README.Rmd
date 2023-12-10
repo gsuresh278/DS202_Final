@@ -26,7 +26,9 @@ crafting policies and strategies to mitigate their impact. In this
 project, we explore the changes in CO2 emissions overtime, focusing on
 different aspects such as the comparison of emission patterns between
 certain countries, impact of international agreements, and specific
-countries with the highest emissions. Along with that, we showed which
+countries with the highest emissions. Along with that, we showed comparisons
+of CO2 emissions over time and the difference in emissions between developed
+and developing countries.
 
 ## ~[[**Data**]{.underline}]{.smallcaps}~
 
@@ -254,7 +256,10 @@ print(large_countries)
 We investigated whether international agreements have influenced CO2
 emissions by examining emission trends for countries with populations
 exceeding 75 million. The visualizations included vertical lines
-representing the years of key international agreements.
+representing the years of key international agreements. The Kyoto Protocol,
+created in 1997, and the Paris Agreement, enacted in 2015, are two
+of the most influential climate agreements to date, so we chose to use
+those as our markers.
 
 ### [CO2 Emissions Compared to Dates of International Agreements]{.smallcaps}
 
