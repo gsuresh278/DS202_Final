@@ -1,10 +1,11 @@
 ---
-editor_options: 
-  markdown: 
+editor_options:
+  markdown:
     wrap: 72
+output: word_document
 ---
 
-# DS202_Final
+# [DS202_Final]{.smallcaps}
 
 Repo for DS202 final project
 
@@ -14,13 +15,24 @@ library(dplyr)
 library(tidyverse)
 ```
 
-Title: Changes in CO2 Emissions Over Time
-Members: Katherine Amundson, Kendra Scace, Gautham Suresh
+# [Changes in CO2 Emissions Over Time Members: Katherine Amundson, Kendra Scace, Gautham Suresh, Kelly Ryan]{.smallcaps}
 
+## [[**Introduction**]{.underline}]{.smallcaps}
 
-The data we are using is the CO2 emissions by country dataset. This data
-set tracked CO2 emission from different countries in the world from 1750
-until 2022.
+Understanding the historical trends of CO2 emissions is essential for
+crafting policies and strategies to mitigate their impact. In this
+project, we explore the changes in CO2 emissions overtime, focusing on
+different aspects such as the comparison of emission patterns between
+developing and developed countries, impact of international agreements,
+and specific countries with the highest emissions.
+
+## ~[[**Data**]{.underline}]{.smallcaps}~
+
+We utilized a comprehensive dataset on CO2 emissions by country from
+1750 to 2022. The dataset includes information on each country's
+emissions, population, area, and relevant codes. After loading the data,
+we conducted data cleaning to handle missing values and ensure the
+dataset's integrity.
 
 ```{r}
 df <- read.csv("CO2 emission by countries.csv")
@@ -30,22 +42,56 @@ nrow(df)
 summary(df)
 ```
 
-There are 9 columns- country, code, calling code, year, Co2 emissions in
-tons, population as of 2022, area, percent of world, and density in km2.
+The dataset contains information about CO2 emissions from different
+countries over a significant period, from 1750 to 2020. The dataset
+comprises 9 columns:
 
-Country is the name of the country. Code is the country's abbreviation.
-Calling code is the area code in a phone number. Year is the year the
-data was observed. CO2 emissions in tons is the recorded amount of CO2
-emissions by the country for that year. Population is the number of
-people living in the country. Area is the size of the country in
-kilometers squared. Percent of world is how much of the Earth the
-country takes up. Density in km2 is the density according to the area.
+1.  **Country**: Represents the name of the country.
 
-There are 59620 rows of data.
+2.  **Code**: Corresponds to the country's abbreviation or code.
+
+3.  **Calling Code**: Refers to the area code in a phone number
+    associated with the country.
+
+4.  **Year**: Denotes the year when the data was observed.
+
+5.  **CO2 Emission (Tons)**: Represents the recorded amount of CO2
+    emissions by the country for a specific year.
+
+6.  **Population as of 2022**: Indicates the number of people living in
+    the country as of the year 2022.
+
+7.  **Area**: Represents the size of the country in square kilometers.
+
+8.  **Percent of World**: Indicates the proportion of the Earth's
+    surface area occupied by the country.
+
+9.  **Density in km2**: Represents the population density of the country
+    calculated as the number of people per square kilometer.
+
+### [**Dataset Overview:**]{.smallcaps}
+
+-   The dataset contains 59,620 rows, each representing a unique
+    combination of country, year, and associated data.
+
+-   The years covered in the dataset range from 1750 to 2020.
+
+-   The CO2 emissions column reveals a wide range of values, from 0 to
+    4.17e+11 (4.17e11 represents 4.17 multiplied by 10 to the power of
+    11).
+
+-   The population column shows variations in population size, with a
+    minimum of 11,310 and a maximum of 1.426e+09 (1.426e09 represents
+    1.426 multiplied by 10 to the power of 9).
+
+-   The dataset also includes information about the size of each
+    country, its share of the world, and population density.
 
 ```{r}
 drop_na(df)
 ```
+
+### [Data Exploration and Cleaning]{.smallcaps}
 
 ```{r}
 # checking for missing values
@@ -73,6 +119,31 @@ cor_matrix <- cor(numeric_df)
 print(cor_matrix)
 ```
 
+**Checking for missing values:** The result indicates that there are
+11,111 missing values in the dataset
+
+**Removing Rows with Missing Values:** clean the dataset by removing
+rows with any missing values
+
+**Understanding the Data Structure:** The structure of the dataframe,
+including data types and the first few values of each variable, is
+printed.
+
+**Column Names and Classes:** The names and classes of the columns in
+the dataframe are printed. The columns include "Country," "Code,"
+"Year," "CO2.emission..Tons.," "Population.2022.," "Area,"
+"X..of.World," and "Density.km2.". Classes range from character to
+integer and numeric.
+
+**Unique Values and Cardinality:** The number of unique values for each
+variable in the dataframe is printed. The output provides insights into
+the cardinality of each variable.
+
+**Correlation Matrix:** The correlation matrix helps understand
+relationships between different numeric variables. In this case, there
+is a 13.02% positive correlation between "Year" and
+"CO2.emission..Tons.".
+
 **Questions to be addressed**
 
 -   Are currently developing countries polluting at rates similar to
@@ -81,7 +152,14 @@ print(cor_matrix)
     the past decade?
 -   Have international agreements made any observable impact on
     emissions for participating countries?
-    
+
+## Exploring Unique Countries and Minimum CO2 Emission Years
+
+### Unique Countries:
+
+The unique countries present in the dataset are extracted and printed.
+
+This provides a list of distinct countries represented in the dataset.
 
 ```{r}
 unique_countries <- unique(df$Country)
@@ -89,10 +167,24 @@ unique_countries <- unique(df$Country)
 print(unique_countries)
 ```
 
+### Filter Non-Zero CO2 Emissions:
+
+This step involves excluding entries with zero CO2 emissions, focusing
+on non-zero emission instances. This filtered dataset has 21,707 rows
+and 9 columns.
+
 ```{r}
 df %>%
   filter(CO2.emission..Tons. != 0)
 ```
+
+### Determining Minimum CO2 Emission Years:
+
+For each country, the year with the minimum CO2 emissions is determined,
+and the corresponding data is summarized. The resulting tibble provides
+insights into the earliest year with non-zero CO2 emissions for each
+country.
+
 ```{r}
 min_year_data <- df %>%
   group_by(Country) %>%
@@ -102,6 +194,33 @@ min_year_data <- df %>%
 
 print(min_year_data)
 ```
+
+## [**Methods**]{.underline}
+
+Our analysis involved various methods, including data cleaning,
+exploratory data analysis, and visualizations. The methods can be
+categorized into data handling, exploratory data analysis (EDA), and
+visualization techniques. The primary tools utilized for these tasks
+were the **`dplyr`** and **`ggplot2`** packages in R.
+
+Our methodology encompassed thorough data cleaning, exploratory data
+analysis, and diverse visualizations to uncover patterns and trends in
+CO2 emissions across countries, with a specific focus on the impact of
+international agreements, top emitters, and the comparison between
+countries like China and the United States. The use of R packages,
+particularly **`dplyr`** and **`ggplot2`**, facilitated efficient data
+manipulation and visualization
+
+## [**Results**]{.underline}
+
+### Changes Over Time
+
+We started by examining how emissions have evolved over time for
+different countries. For countries with data available before 1900, we
+visualized their emission trends. This helped us identify early
+industrializers and compare their patterns with currently developing
+countries.
+
 ```{r}
 selected_countries <- min_year_data %>%
   filter(Min_Year < 1900)
@@ -128,6 +247,15 @@ large_countries <- df %>%
 print(large_countries)
 ```
 
+## Impact of International Agreements
+
+We investigated whether international agreements have influenced CO2
+emissions by examining emission trends for countries with populations
+exceeding 75 million. The visualizations included vertical lines
+representing the years of key international agreements.
+
+### CO2 Emissions Compared to Dates of International Agreements
+
 ```{r}
 countries_agreements <- large_countries %>%
   filter(Year > 1985)
@@ -143,6 +271,12 @@ agreements_years <- ggplot(countries_agreements, aes(x = Year, y = CO2.emission.
 agreements_years + geom_vline(xintercept=1997)
 agreements_years + geom_vline(xintercept=2015)
 ```
+
+### Highest Emissions in 2020
+
+We identified the top emitters in 2020 and visualized their emissions.
+This analysis provides insights into which countries contribute most to
+global emissions.
 
 ```{r}
 largest_emissions <- df%>% 
@@ -168,6 +302,11 @@ highest_population_emissions<-ggplot(emissions_2020, aes(x=Country, y=CO2.emissi
 print(highest_population_emissions)
 ```
 
+### Global Distribution
+
+To understand the geographical distribution of emissions in 2020, we
+created a world map highlighting each country's contribution.
+
 ```{r}
 world_map <- map_data("world")
 
@@ -190,6 +329,7 @@ ggplot(merged_data, aes(x = long, y = lat, group = group, fill = CO2.emission..T
   labs(title = "Global Distribution of CO2 Emissions (Year 2020)",
        fill = "CO2 Emissions (Tons)")
 ```
+
 ```{r}
 valid_country_codes <- df %>%
   distinct(Code) %>%
@@ -199,6 +339,7 @@ valid_country_codes <- df %>%
 wdi_data <- WDI(country = valid_country_codes, indicator =c("SP.POP.TOTL", "NY.GDP.MKTP.KD"))
 
 ```
+
 ```{r}
 wdi_data <- left_join(df, wdi_data, by = c("Code" = "iso2c", "Year" = "year"))
 
@@ -206,6 +347,11 @@ wdi_data <- left_join(df, wdi_data, by = c("Code" = "iso2c", "Year" = "year"))
 wdi_data <- wdi_data %>%
   filter(Year >= 1960)
 ```
+
+Comparison: China vs. United States We compared CO2 emission trends
+between China and the United States over time.
+
+### CO2 Emissions Comparison: China vs. United States
 
 ```{r}
 china_us_data <- wdi_data %>%
@@ -219,6 +365,12 @@ ggplot(china_us_data, aes(x = Year, y = CO2.emission..Tons., color = Country)) +
        y = "CO2 Emissions (Tons)",
        color = "Country")
 ```
+
+### Factors Influencing Emissions in the United States
+
+We explored potential factors influencing emissions in the United
+States, including population size and GDP.
+
 ```{r}
 us_data <- wdi_data %>%
   filter(Country == "United States")
@@ -236,6 +388,9 @@ ggplot(us_data, aes(x = SP.POP.TOTL, y = CO2.emission..Tons. / SP.POP.TOTL)) +
        x = "Population",
        y = "Emissions Rate (Tons per capita)")
 ```
+
+### GDP vs. CO2 Emissions: United States
+
 ```{r}
 ggplot(us_data, aes(x = NY.GDP.MKTP.KD, y = CO2.emission..Tons.)) +
   geom_point() +
@@ -244,3 +399,59 @@ ggplot(us_data, aes(x = NY.GDP.MKTP.KD, y = CO2.emission..Tons.)) +
        y = "CO2 Emissions (Tons)")
 ```
 
+## [**Conclusion**]{.underline}
+
+Our analysis provides valuable insights into the changing landscape of
+CO2 emissions. We observed historical emission patterns, the impact of
+international agreements, and the contributions of specific countries.
+Understanding these trends is crucial for policymakers and stakeholders
+working towards sustainable environmental practices.
+
+[**Historical Emission Patterns**]{.underline}
+
+Our exploration of historical emission patterns provided a comprehensive
+view of how different countries have contributed to the cumulative CO2
+emissions since 1750. By identifying the starting points of recorded
+emissions for each country, we gained insights into the trajectories of
+their carbon footprints over time. This historical context aids in
+understanding the varying roles nations have played in the global
+emissions landscape.
+
+[**Impact of International Agreements**]{.underline}
+
+Our analysis delved into the impact of international agreements on CO2
+emissions, specifically focusing on countries with populations exceeding
+75 million. Visualizing emissions trends alongside the dates of major
+agreements revealed nuanced shifts in emission patterns following
+international efforts. This aspect of our study sheds light on the
+effectiveness of collaborative initiatives in curbing and fostering a
+more sustainable future.
+
+[**Significance for Policymakers and Stakeholders**]{.underline}
+
+The insights derived from our analysis carry significant implications
+for policymakers and stakeholders dedicated to environmental
+sustainability. Policymakers can leverage this information to design
+tailored strategies for emission reduction, accounting for historical
+contributions and the impact of international collaborations.
+Stakeholders, including environmental organizations and businesses, can
+use these findings to align their efforts with global objectives and
+contribute to a more sustainable and resilient future.
+
+[**Future Considerations**]{.underline}
+
+As we progress towards a more environmentally conscious future,
+continued monitoring and analysis of CO2 emissions remain imperative.
+Ongoing assessments will enable us to evaluate the effectiveness of
+current policies, identify emerging trends, and adapt strategies to
+address evolving challenges. Additionally, exploring the intersection of
+CO2 emissions with socioeconomic factors, technological advancements,
+and policy implementations can provide a holistic understanding of the
+forces shaping our environmental trajectory.
+
+In conclusion, our analysis not only illuminates the historical context
+of CO2 emissions but also offers a roadmap for informed decision-making
+in the pursuit of a sustainable and resilient global ecosystem. As we
+collectively strive for a greener future, the lessons drawn from this
+study can serve as valuable guides for shaping impactful policies and
+fostering a shared commitment to environmental stewardship.
