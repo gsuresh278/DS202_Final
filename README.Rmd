@@ -153,9 +153,9 @@ is a 13.02% positive correlation between "Year" and
 -   Have international agreements made any observable impact on
     emissions for participating countries?
 
-## Exploring Unique Countries and Minimum CO2 Emission Years
+## [Exploring Unique Countries and Minimum CO2 Emission Years]{.smallcaps}
 
-### Unique Countries:
+### [Unique Countries:]{.smallcaps}
 
 The unique countries present in the dataset are extracted and printed.
 
@@ -167,7 +167,7 @@ unique_countries <- unique(df$Country)
 print(unique_countries)
 ```
 
-### Filter Non-Zero CO2 Emissions:
+### [Filter Non-Zero CO2 Emissions:]{.smallcaps}
 
 This step involves excluding entries with zero CO2 emissions, focusing
 on non-zero emission instances. This filtered dataset has 21,707 rows
@@ -178,7 +178,7 @@ df %>%
   filter(CO2.emission..Tons. != 0)
 ```
 
-### Determining Minimum CO2 Emission Years:
+### [Determining Minimum CO2 Emission Years:]{.smallcaps}
 
 For each country, the year with the minimum CO2 emissions is determined,
 and the corresponding data is summarized. The resulting tibble provides
@@ -195,7 +195,7 @@ min_year_data <- df %>%
 print(min_year_data)
 ```
 
-## [**Methods**]{.underline}
+## [[**Methods**]{.underline}]{.smallcaps}
 
 Our analysis involved various methods, including data cleaning,
 exploratory data analysis, and visualizations. The methods can be
@@ -211,9 +211,9 @@ countries like China and the United States. The use of R packages,
 particularly **`dplyr`** and **`ggplot2`**, facilitated efficient data
 manipulation and visualization
 
-## [**Results**]{.underline}
+## [[**Results**]{.underline}]{.smallcaps}
 
-### Changes Over Time
+### [Changes Over Time]{.smallcaps}
 
 We started by examining how emissions have evolved over time for
 different countries. For countries with data available before 1900, we
@@ -247,14 +247,14 @@ large_countries <- df %>%
 print(large_countries)
 ```
 
-## Impact of International Agreements
+## [Impact of International Agreements]{.smallcaps}
 
 We investigated whether international agreements have influenced CO2
 emissions by examining emission trends for countries with populations
 exceeding 75 million. The visualizations included vertical lines
 representing the years of key international agreements.
 
-### CO2 Emissions Compared to Dates of International Agreements
+### [CO2 Emissions Compared to Dates of International Agreements]{.smallcaps}
 
 ```{r}
 countries_agreements <- large_countries %>%
@@ -272,7 +272,7 @@ agreements_years + geom_vline(xintercept=1997)
 agreements_years + geom_vline(xintercept=2015)
 ```
 
-### Highest Emissions in 2020
+### [Highest Emissions in 2020]{.smallcaps}
 
 We identified the top emitters in 2020 and visualized their emissions.
 This analysis provides insights into which countries contribute most to
@@ -302,7 +302,7 @@ highest_population_emissions<-ggplot(emissions_2020, aes(x=Country, y=CO2.emissi
 print(highest_population_emissions)
 ```
 
-### Global Distribution
+### [Global Distribution]{.smallcaps}
 
 To understand the geographical distribution of emissions in 2020, we
 created a world map highlighting each country's contribution.
@@ -348,10 +348,7 @@ wdi_data <- wdi_data %>%
   filter(Year >= 1960)
 ```
 
-Comparison: China vs. United States We compared CO2 emission trends
-between China and the United States over time.
-
-### CO2 Emissions Comparison: China vs. United States
+### [CO2 Emissions Comparison: China vs. United States]{.smallcaps}
 
 ```{r}
 china_us_data <- wdi_data %>%
@@ -366,7 +363,7 @@ ggplot(china_us_data, aes(x = Year, y = CO2.emission..Tons., color = Country)) +
        color = "Country")
 ```
 
-### Factors Influencing Emissions in the United States
+### [Factors Influencing Emissions in the United States]{.smallcaps}
 
 We explored potential factors influencing emissions in the United
 States, including population size and GDP.
@@ -389,7 +386,7 @@ ggplot(us_data, aes(x = SP.POP.TOTL, y = CO2.emission..Tons. / SP.POP.TOTL)) +
        y = "Emissions Rate (Tons per capita)")
 ```
 
-### GDP vs. CO2 Emissions: United States
+### [GDP vs. CO2 Emissions: United States]{.smallcaps}
 
 ```{r}
 ggplot(us_data, aes(x = NY.GDP.MKTP.KD, y = CO2.emission..Tons.)) +
@@ -399,7 +396,186 @@ ggplot(us_data, aes(x = NY.GDP.MKTP.KD, y = CO2.emission..Tons.)) +
        y = "CO2 Emissions (Tons)")
 ```
 
-## [**Conclusion**]{.underline}
+
+
+```{r}
+# Assuming df1 is your data frame
+library(dplyr)
+
+# renaming so its easier to type
+df1 <- df %>%
+  rename(coTons = "CO2.emission..Tons.", population = "Population.2022.")
+
+# sorts df1 based on the population column in descending order
+df1 <- df1 %>%
+  arrange(desc(population))
+
+# getting all data from 2020
+dfSelect2020 <- df1 %>%
+  filter(Year == 2020)
+
+head(dfSelect2020)
+
+# filter where it returns all rows where one value has NaN on all columns
+dfNull2020 <- dfSelect2020 %>%
+  filter(rowSums(is.na(.)) > 0)
+
+dfNull2020$Country
+num_rows <- nrow(dfNull2020)
+print(num_rows)
+
+# compare the most polluting to this group of countries:
+the31Union <- sum(dfNull2020$coTons, na.rm = TRUE)
+
+# Identify the most polluting country
+theMostPolluting <- dfSelect2020[dfSelect2020$coTons == max(dfSelect2020$coTons, na.rm = TRUE), ]
+theMostPolluting
+
+# Create vectors for x and y values
+x_value <- c(theMostPolluting$Country, 'Undefined Group')
+y_value <- c(theMostPolluting$coTons, the31Union)
+
+# Create a bar plot
+barplot(y_value, names.arg = x_value, col = c('blue', 'green'), main = 'CO2 Emissions Comparison', xlab = 'Country', ylab = 'CO2 Emissions (Tons)')
+
+
+
+```
+```{r}
+# number of countries required to match the CO2 emissions of the US
+
+# arrange in ascending order based on coTons column
+dfSorted2020 <- dfSelect2020 %>% arrange(coTons)
+dfSorted2020
+i <- 1
+countriesSumsCo2 <- 0
+dfCountriesSums <- data.frame(matrix(ncol = ncol(dfSorted2020), nrow = 0))
+colnames(dfCountriesSums) <- colnames(dfSorted2020)
+theMostPolluting <- dfSelect2020[order(-dfSelect2020$coTons), ][1, ]
+
+while (theMostPolluting$coTons > countriesSumsCo2) {
+  countriesSumsCo2 <- countriesSumsCo2 + dfSorted2020$coTons[i]
+  
+  row <- dfSorted2020[i, ]
+  dfCountriesSums <- rbind(dfCountriesSums, row)
+  
+  i <- i + 1
+}
+
+cat(paste(i - 1, " ", countriesSumsCo2, "\n"))
+dfCountriesSums
+
+
+```
+```{r}
+# Select the top 10 countries with the highest CO2 emissions in 2020
+df2020Big <- dfSelect2020 %>% arrange(desc(coTons)) %>% head(10)
+
+# Filter the original dataset for the selected countries
+allYearCO2Big <- df1 %>% filter(Country %in% df2020Big$Country)
+
+# Plot the data using ggplot2
+ggplot(allYearCO2Big, aes(x = Year, y = coTons, color = Country)) +
+  geom_line(size = 1) +
+  labs(title = "CO2 Emissions of Top 10 Countries in 2020",
+       x = "Year",
+       y = "CO2 Tons") +
+  theme_minimal()
+
+```
+
+```{r}
+# 19th century
+df19thCentury <- df1 %>% filter(Year >= 1800 & Year <= 1899)
+
+# Select the top 10 countries with the highest CO2 emissions in the 19th century
+df19thCenturyBig <- df19thCentury %>% 
+  group_by(Country) %>% 
+  summarise(TotalCO2 = sum(coTons)) %>% 
+  arrange(desc(TotalCO2)) %>% 
+  head(10)
+
+# Filter the original dataset for the selected countries in the 19th century
+allYearCO219thCenturyBig <- df19thCentury %>% filter(Country %in% df19thCenturyBig$Country)
+
+# Plot the data using ggplot2
+ggplot(allYearCO219thCenturyBig, aes(x = Year, y = coTons, color = Country)) +
+  geom_line(size = 1) +
+  labs(title = "CO2 Emissions of Top 10 Countries in the 19th Century",
+       x = "Year",
+       y = "CO2 Tons") +
+  theme_minimal()
+
+```
+```{r}
+# 20th century
+# Filter the original dataset for the 20th century
+df20thCentury <- df1 %>% filter(Year >= 1900 & Year <= 1999)
+
+# Select the top 10 countries with the highest CO2 emissions in the 20th century
+df20thCenturyBig <- df20thCentury %>% 
+  group_by(Country) %>% 
+  summarise(TotalCO2 = sum(coTons)) %>% 
+  arrange(desc(TotalCO2)) %>% 
+  head(10)
+
+# Filter the original dataset for the selected countries in the 20th century
+allYearCO220thCenturyBig <- df20thCentury %>% filter(Country %in% df20thCenturyBig$Country)
+
+# Plot the data using ggplot2
+ggplot(allYearCO220thCenturyBig, aes(x = Year, y = coTons, color = Country)) +
+  geom_line(size = 1) +
+  labs(title = "CO2 Emissions of Top 10 Countries in the 20th Century",
+       x = "Year",
+       y = "CO2 Tons") +
+  theme_minimal()
+
+```
+```{r}
+# Filter the original dataset for the 21st century
+df21stCentury <- df1 %>% filter(Year >= 2000 & Year <= 2022)
+
+# Select the top 10 countries with the highest CO2 emissions in the 21st century
+df21stCenturyBig <- df21stCentury %>% 
+  group_by(Country) %>% 
+  summarise(TotalCO2 = sum(coTons)) %>% 
+  arrange(desc(TotalCO2)) %>% 
+  head(10)
+
+# Filter the original dataset for the selected countries in the 21st century
+allYearCO221stCenturyBig <- df21stCentury %>% filter(Country %in% df21stCenturyBig$Country)
+
+# Plot the data using ggplot2
+ggplot(allYearCO221stCenturyBig, aes(x = Year, y = coTons, color = Country)) +
+  geom_line(size = 1) +
+  labs(title = "CO2 Emissions of Top 10 Countries in the 21st Century",
+       x = "Year",
+       y = "CO2 Tons") +
+  theme_minimal()
+
+```
+```{r}
+df2020BigByArea = df2020Big
+df2020BigByArea$coByArea <- df2020BigByArea$coTons / df2020BigByArea$Area
+df2020BigByArea
+
+ggplot(df2020BigByArea, aes(x = reorder(Country, -coByArea), y = coByArea, fill = Country)) +
+  geom_bar(stat = "identity", position = "dodge", color = "white") +
+  theme_minimal() +
+  labs(x = "Country", y = "CO2 Tons per Area") +
+  ggtitle("CO2 Emissions per Area for Top Countries in 2020") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1),
+        legend.position = "none") +
+  scale_fill_brewer(palette = "Set3")
+
+
+```
+```{r}
+
+```
+
+
+## [[**Conclusion**]{.underline}]{.smallcaps}
 
 Our analysis provides valuable insights into the changing landscape of
 CO2 emissions. We observed historical emission patterns, the impact of
@@ -407,7 +583,7 @@ international agreements, and the contributions of specific countries.
 Understanding these trends is crucial for policymakers and stakeholders
 working towards sustainable environmental practices.
 
-[**Historical Emission Patterns**]{.underline}
+[[**Historical Emission Patterns**]{.underline}]{.smallcaps}
 
 Our exploration of historical emission patterns provided a comprehensive
 view of how different countries have contributed to the cumulative CO2
@@ -417,7 +593,7 @@ their carbon footprints over time. This historical context aids in
 understanding the varying roles nations have played in the global
 emissions landscape.
 
-[**Impact of International Agreements**]{.underline}
+[[**Impact of International Agreements**]{.underline}]{.smallcaps}
 
 Our analysis delved into the impact of international agreements on CO2
 emissions, specifically focusing on countries with populations exceeding
@@ -427,7 +603,8 @@ international efforts. This aspect of our study sheds light on the
 effectiveness of collaborative initiatives in curbing and fostering a
 more sustainable future.
 
-[**Significance for Policymakers and Stakeholders**]{.underline}
+[[**Significance for Policymakers and
+Stakeholders**]{.underline}]{.smallcaps}
 
 The insights derived from our analysis carry significant implications
 for policymakers and stakeholders dedicated to environmental
@@ -438,7 +615,7 @@ Stakeholders, including environmental organizations and businesses, can
 use these findings to align their efforts with global objectives and
 contribute to a more sustainable and resilient future.
 
-[**Future Considerations**]{.underline}
+[[**Future Considerations**]{.underline}]{.smallcaps}
 
 As we progress towards a more environmentally conscious future,
 continued monitoring and analysis of CO2 emissions remain imperative.
