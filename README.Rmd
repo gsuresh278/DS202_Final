@@ -23,8 +23,8 @@ Understanding the historical trends of CO2 emissions is essential for
 crafting policies and strategies to mitigate their impact. In this
 project, we explore the changes in CO2 emissions overtime, focusing on
 different aspects such as the comparison of emission patterns between
-developing and developed countries, impact of international agreements,
-and specific countries with the highest emissions.
+certain countries, impact of international agreements, and specific
+countries with the highest emissions. Along with that, we showed which
 
 ## ~[[**Data**]{.underline}]{.smallcaps}~
 
@@ -444,6 +444,35 @@ ggplot(us_data, aes(x = SP.POP.TOTL, y = CO2.emission..Tons.)) +
   facet_wrap(~facet_var, scales = "free_y", ncol = 1) +
   ylab(NULL) +
   theme(strip.background = element_blank(), strip.text.x = element_blank()) + scale_y_continuous(labels = scales::comma)
+
+```
+
+```{r}
+# Assuming wdi_data is your initial dataframe with columns: Country, SP.POP.TOTL, CO2.emission..Tons.
+
+# Filter data for the United States
+# Assuming wdi_data is your initial dataframe with columns: Country, SP.POP.TOTL, CO2.emission..Tons.
+
+# Filter data for the United States
+us_data <- wdi_data %>%
+  filter(Country == "United States")
+
+# Create a new variable for faceting
+facet_var <- rep(c("Total", "Per Capita"), length.out = nrow(us_data))
+
+# Add the facet_var variable to the dataset
+us_data <- mutate(us_data, facet_var = facet_var)
+
+# Plot population vs. emissions rate for the United States
+ggplot(us_data, aes(x = SP.POP.TOTL, y = CO2.emission..Tons.)) +
+  geom_point() +
+  labs(title = "Population vs. Emissions Rate: United States",
+       x = "Population") +
+  facet_grid(facet_var ~ ., scales = "free_y", switch = 'y') +
+  ylab("Emissions Rate (Total)") +
+  theme(strip.background = element_blank(), strip.text.x = element_blank()) +
+  scale_y_continuous(labels = scales::comma) +
+  theme(strip.background = element_blank(), strip.text.x = element_blank())
 
 ```
 
