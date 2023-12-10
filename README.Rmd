@@ -286,7 +286,14 @@ largest_emissions <- df%>%
 print(largest_emissions)
 
 most_emissions_graph<-ggplot(largest_emissions, aes(x=Country, y=CO2.emission..Tons., col=Country)) +
-  geom_point(size = 5)
+  geom_point(size = 5) +
+    labs(title = "Top 10 Countries by CO2 Emissions in 2020",
+       x = "Country",
+       y = "CO2 Emission (Tons)") +
+  theme_minimal() +
+    theme(axis.text.x = element_text(angle = 90))
+
+
 
 print(most_emissions_graph)
 ```
@@ -297,7 +304,7 @@ emissions_2020 <- df %>%
   slice_max(Population.2022., n = 20)
 
 highest_population_emissions<-ggplot(emissions_2020, aes(x=Country, y=CO2.emission..Tons., col=Country)) +
-  geom_point(size = 5)
+  geom_point(size = 5) + theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 1))
 
 print(highest_population_emissions)
 ```
@@ -328,6 +335,37 @@ ggplot(merged_data, aes(x = long, y = lat, group = group, fill = CO2.emission..T
   geom_polygon(color = "white") +
   labs(title = "Global Distribution of CO2 Emissions (Year 2020)",
        fill = "CO2 Emissions (Tons)")
+```
+
+```{r}
+library(ggplot2)
+library(dplyr)
+library(ggthemes)
+
+# Load world map data
+world_map <- map_data("world")
+
+# Rename regions for consistency
+world_map <- world_map %>%
+  mutate(region = case_when(
+    region == "UK"  ~ "United Kingdom",
+    region == "USA" ~ "United States",
+    TRUE ~ region
+  ))
+
+# Filter the data for the year 2020
+df_2020 <- df %>% filter(Year == 2020)
+
+# Perform inner join with the world map data
+merged_data <- inner_join(world_map, df_2020, by = c("region" = "Country"))
+
+# Plot the global distribution of CO2 emissions for the year 2020
+ggplot(merged_data, aes(x = long, y = lat, group = group, fill = CO2.emission..Tons.)) +
+  geom_polygon(color = "white") +
+  labs(title = "Global Distribution of CO2 Emissions (Year 2020)",
+       fill = "CO2 Emissions (Tons)") +
+  theme_map()
+
 ```
 
 ```{r}
@@ -386,6 +424,29 @@ ggplot(us_data, aes(x = SP.POP.TOTL, y = CO2.emission..Tons. / SP.POP.TOTL)) +
        y = "Emissions Rate (Tons per capita)")
 ```
 
+```{r}
+# Filter data for the United States
+us_data <- wdi_data %>%
+  filter(Country == "United States")
+
+# Create a new variable for faceting
+facet_var <- rep(c("Total", "Per Capita"), length.out = nrow(us_data))
+
+# Add the facet_var variable to the dataset
+us_data <- mutate(us_data, facet_var = facet_var)
+
+# Plot population vs. emissions rate for the United States
+ggplot(us_data, aes(x = SP.POP.TOTL, y = CO2.emission..Tons.)) +
+  geom_point() +
+  labs(title = "Population vs. Emissions Rate: United States",
+       x = "Population",
+       y = "Emissions Rate") +
+  facet_wrap(~facet_var, scales = "free_y", ncol = 1) +
+  ylab(NULL) +
+  theme(strip.background = element_blank(), strip.text.x = element_blank()) + scale_y_continuous(labels = scales::comma)
+
+```
+
 ### [GDP vs. CO2 Emissions: United States]{.smallcaps}
 
 ```{r}
@@ -396,10 +457,31 @@ ggplot(us_data, aes(x = NY.GDP.MKTP.KD, y = CO2.emission..Tons.)) +
        y = "CO2 Emissions (Tons)")
 ```
 
+### CO2 Emissions Comparison
 
+In this section, we delve into a detailed analysis of CO2 emissions
+data, focusing on the year 2020. The dataset under consideration
+includes information on CO2 emissions, population figures, and
+additional pertinent variables across various countries.
+
+1.  Data Preprocessing:
+
+Column Renaming: For enhanced readability and ease of use, columns were
+renamed. The column "CO2.emission..Tons." was abbreviated to "coTons,"
+while "Population.2022." became "population."
+
+Data Sorting: To facilitate subsequent analyses, the dataset was sorted
+in descending order based on population.
+
+2.  Analysis for the Year 2020:
+
+Filtering Data: The dataset was filtered to exclusively include entries
+where the "Year" column corresponds to 2020.
+
+Handling NaN Values: A subset of data was extracted where at least one
+value had NaN on all columns.
 
 ```{r}
-# Assuming df1 is your data frame
 library(dplyr)
 
 # renaming so its easier to type
@@ -411,169 +493,180 @@ df1 <- df1 %>%
   arrange(desc(population))
 
 # getting all data from 2020
-dfSelect2020 <- df1 %>%
+df2020 <- df1 %>%
   filter(Year == 2020)
 
-head(dfSelect2020)
+head(df2020)
 
 # filter where it returns all rows where one value has NaN on all columns
-dfNull2020 <- dfSelect2020 %>%
+null2020 <- df2020 %>%
   filter(rowSums(is.na(.)) > 0)
 
-dfNull2020$Country
-num_rows <- nrow(dfNull2020)
+null2020$Country
+num_rows <- nrow(null2020)
 print(num_rows)
 
-# compare the most polluting to this group of countries:
-the31Union <- sum(dfNull2020$coTons, na.rm = TRUE)
 
 # Identify the most polluting country
-theMostPolluting <- dfSelect2020[dfSelect2020$coTons == max(dfSelect2020$coTons, na.rm = TRUE), ]
+theMostPolluting <- df2020[df2020$coTons == max(df2020$coTons, na.rm = TRUE), ]
 theMostPolluting
 
-# Create vectors for x and y values
-x_value <- c(theMostPolluting$Country, 'Undefined Group')
-y_value <- c(theMostPolluting$coTons, the31Union)
-
-# Create a bar plot
-barplot(y_value, names.arg = x_value, col = c('blue', 'green'), main = 'CO2 Emissions Comparison', xlab = 'Country', ylab = 'CO2 Emissions (Tons)')
 
 
 
 ```
+
+Provides valuable insights into CO2 emissions in the year 2020, shedding
+light on the most polluting country, United States, and exploring a
+group of countries with undefined values. The accompanying visualization
+enhances our understanding of comparative emissions and the contribution
+of the undefined group.
+
 ```{r}
-# number of countries required to match the CO2 emissions of the US
-
 # arrange in ascending order based on coTons column
-dfSorted2020 <- dfSelect2020 %>% arrange(coTons)
-dfSorted2020
-i <- 1
-countriesSumsCo2 <- 0
-dfCountriesSums <- data.frame(matrix(ncol = ncol(dfSorted2020), nrow = 0))
-colnames(dfCountriesSums) <- colnames(dfSorted2020)
-theMostPolluting <- dfSelect2020[order(-dfSelect2020$coTons), ][1, ]
-
-while (theMostPolluting$coTons > countriesSumsCo2) {
-  countriesSumsCo2 <- countriesSumsCo2 + dfSorted2020$coTons[i]
-  
-  row <- dfSorted2020[i, ]
-  dfCountriesSums <- rbind(dfCountriesSums, row)
-  
-  i <- i + 1
-}
-
-cat(paste(i - 1, " ", countriesSumsCo2, "\n"))
-dfCountriesSums
+sorted2020 <- df2020 %>% arrange(coTons)
+sorted2020
+mostPolluting <- df2020[order(-df2020$coTons), ][1, ]
+mostPolluting
 
 
 ```
+
 ```{r}
 # Select the top 10 countries with the highest CO2 emissions in 2020
-df2020Big <- dfSelect2020 %>% arrange(desc(coTons)) %>% head(10)
+top10_2020 <- df2020 %>% arrange(desc(coTons)) %>% head(10)
 
 # Filter the original dataset for the selected countries
-allYearCO2Big <- df1 %>% filter(Country %in% df2020Big$Country)
+topCountriesCO2 <- df1 %>% filter(Country %in% top10_2020$Country)
 
 # Plot the data using ggplot2
-ggplot(allYearCO2Big, aes(x = Year, y = coTons, color = Country)) +
+ggplot(topCountriesCO2, aes(x = Year, y = coTons, color = Country)) +
   geom_line(size = 1) +
   labs(title = "CO2 Emissions of Top 10 Countries in 2020",
        x = "Year",
        y = "CO2 Tons") +
-  theme_minimal()
+  theme_minimal() + scale_y_continuous(labels = scales::comma)
+
 
 ```
 
 ```{r}
-# 19th century
-df19thCentury <- df1 %>% filter(Year >= 1800 & Year <= 1899)
+# 18th century
+cent_18 <- df1 %>% filter(Year >= 1750 & Year <= 1799)
 
 # Select the top 10 countries with the highest CO2 emissions in the 19th century
-df19thCenturyBig <- df19thCentury %>% 
+big_cent_18 <- cent_18 %>% 
   group_by(Country) %>% 
   summarise(TotalCO2 = sum(coTons)) %>% 
   arrange(desc(TotalCO2)) %>% 
   head(10)
 
 # Filter the original dataset for the selected countries in the 19th century
-allYearCO219thCenturyBig <- df19thCentury %>% filter(Country %in% df19thCenturyBig$Country)
+CO2_cent_18 <- cent_18 %>% filter(Country %in% big_cent_18$Country)
 
 # Plot the data using ggplot2
-ggplot(allYearCO219thCenturyBig, aes(x = Year, y = coTons, color = Country)) +
+ggplot(CO2_cent_18, aes(x = Year, y = coTons, color = Country)) +
+  geom_line(size = 1) +
+  labs(title = "CO2 Emissions of Top 10 Countries in the 18th Century",
+       x = "Year",
+       y = "CO2 Tons") +
+  theme_minimal() + scale_y_continuous(labels = scales::comma)
+
+
+```
+
+```{r}
+# 19th century
+cent_19 <- df1 %>% filter(Year >= 1800 & Year <= 1899)
+
+# Select the top 10 countries with the highest CO2 emissions in the 19th century
+big_cent_19 <- cent_19 %>% 
+  group_by(Country) %>% 
+  summarise(TotalCO2 = sum(coTons)) %>% 
+  arrange(desc(TotalCO2)) %>% 
+  head(10)
+
+# Filter the original dataset for the selected countries in the 19th century
+CO2_cent_19 <- cent_19 %>% filter(Country %in% big_cent_19$Country)
+
+# Plot the data using ggplot2
+ggplot(CO2_cent_19, aes(x = Year, y = coTons, color = Country)) +
   geom_line(size = 1) +
   labs(title = "CO2 Emissions of Top 10 Countries in the 19th Century",
        x = "Year",
-       y = "CO2 Tons") +
-  theme_minimal()
+       y = "CO2 Tons") + scale_y_continuous(labels = scales::comma)
+
 
 ```
+
 ```{r}
 # 20th century
 # Filter the original dataset for the 20th century
-df20thCentury <- df1 %>% filter(Year >= 1900 & Year <= 1999)
+cent_20 <- df1 %>% filter(Year >= 1900 & Year <= 1999)
 
 # Select the top 10 countries with the highest CO2 emissions in the 20th century
-df20thCenturyBig <- df20thCentury %>% 
+big_cent_20 <- cent_20 %>% 
   group_by(Country) %>% 
   summarise(TotalCO2 = sum(coTons)) %>% 
   arrange(desc(TotalCO2)) %>% 
   head(10)
 
 # Filter the original dataset for the selected countries in the 20th century
-allYearCO220thCenturyBig <- df20thCentury %>% filter(Country %in% df20thCenturyBig$Country)
+CO2_cent_20 <- cent_20 %>% filter(Country %in% big_cent_20$Country)
 
 # Plot the data using ggplot2
-ggplot(allYearCO220thCenturyBig, aes(x = Year, y = coTons, color = Country)) +
+ggplot(CO2_cent_20, aes(x = Year, y = coTons, color = Country)) +
   geom_line(size = 1) +
   labs(title = "CO2 Emissions of Top 10 Countries in the 20th Century",
        x = "Year",
        y = "CO2 Tons") +
-  theme_minimal()
+  theme_minimal() + scale_y_continuous(labels = scales::comma)
+
 
 ```
+
 ```{r}
 # Filter the original dataset for the 21st century
-df21stCentury <- df1 %>% filter(Year >= 2000 & Year <= 2022)
+cent_21 <- df1 %>% filter(Year >= 2000 & Year <= 2022)
 
 # Select the top 10 countries with the highest CO2 emissions in the 21st century
-df21stCenturyBig <- df21stCentury %>% 
+big_cent_21 <- cent_21 %>% 
   group_by(Country) %>% 
   summarise(TotalCO2 = sum(coTons)) %>% 
   arrange(desc(TotalCO2)) %>% 
   head(10)
 
 # Filter the original dataset for the selected countries in the 21st century
-allYearCO221stCenturyBig <- df21stCentury %>% filter(Country %in% df21stCenturyBig$Country)
+CO2_cent_21 <- cent_21 %>% filter(Country %in% big_cent_21$Country)
 
 # Plot the data using ggplot2
-ggplot(allYearCO221stCenturyBig, aes(x = Year, y = coTons, color = Country)) +
+ggplot(CO2_cent_21, aes(x = Year, y = coTons, color = Country)) +
   geom_line(size = 1) +
   labs(title = "CO2 Emissions of Top 10 Countries in the 21st Century",
        x = "Year",
        y = "CO2 Tons") +
-  theme_minimal()
+  theme_minimal() + scale_y_continuous(labels = scales::comma)
+
 
 ```
-```{r}
-df2020BigByArea = df2020Big
-df2020BigByArea$coByArea <- df2020BigByArea$coTons / df2020BigByArea$Area
-df2020BigByArea
 
-ggplot(df2020BigByArea, aes(x = reorder(Country, -coByArea), y = coByArea, fill = Country)) +
+```{r}
+area2020 = top10_2020
+area2020$coByArea <- area2020$coTons / area2020$Area
+area2020
+
+ggplot(area2020, aes(x = reorder(Country, -coByArea), y = coByArea, fill = Country)) +
   geom_bar(stat = "identity", position = "dodge", color = "white") +
   theme_minimal() +
   labs(x = "Country", y = "CO2 Tons per Area") +
   ggtitle("CO2 Emissions per Area for Top Countries in 2020") +
   theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1),
         legend.position = "none") +
-  scale_fill_brewer(palette = "Set3")
+  scale_fill_brewer(palette = "Set3") + scale_y_continuous(labels = scales::comma)
 
 
-```
-```{r}
 
 ```
-
 
 ## [[**Conclusion**]{.underline}]{.smallcaps}
 
