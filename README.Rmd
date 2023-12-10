@@ -35,7 +35,6 @@ We utilized a comprehensive dataset on CO2 emissions by country from
 emissions, population, area, and relevant codes. After loading the data,
 we conducted data cleaning to handle missing values and ensure the
 dataset's integrity.
-
 ```{r}
 df <- read.csv("CO2 emission by countries.csv")
 head(df)
