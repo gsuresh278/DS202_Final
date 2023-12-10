@@ -92,7 +92,7 @@ comprises 9 columns:
     country, its share of the world, and population density.
 
 ```{r}
-drop_na(df)
+df <- drop_na(df)
 ```
 
 ### [Data Exploration and Cleaning]{.smallcaps}
@@ -161,14 +161,15 @@ is a 13.02% positive correlation between "Year" and
 
 ### [Unique Countries:]{.smallcaps}
 
-The unique countries present in the dataset are extracted and printed.
+The unique countries present in the dataset are extracted and the head is 
+printed.
 
 This provides a list of distinct countries represented in the dataset.
 
 ```{r}
 unique_countries <- unique(df$Country)
 
-print(unique_countries)
+head(unique_countries)
 ```
 
 ### [Filter Non-Zero CO2 Emissions:]{.smallcaps}
@@ -178,16 +179,16 @@ on non-zero emission instances. This filtered dataset has 21,707 rows
 and 9 columns.
 
 ```{r}
-df %>%
+df <- df %>%
   filter(CO2.emission..Tons. != 0)
 ```
 
 ### [Determining Minimum CO2 Emission Years:]{.smallcaps}
 
 For each country, the year with the minimum CO2 emissions is determined,
-and the corresponding data is summarized. The resulting tibble provides
-insights into the earliest year with non-zero CO2 emissions for each
-country.
+and the corresponding data is summarized. This results in a dataset that 
+provides insights into the earliest year with non-zero CO2 emissions for each
+country, for which we printed the head.
 
 ```{r}
 min_year_data <- df %>%
@@ -196,7 +197,7 @@ min_year_data <- df %>%
   summarise(Min_Year = min(Year),
             CO2_Emission = CO2.emission..Tons.[which.min(Year)])
 
-print(min_year_data)
+head(min_year_data)
 ```
 
 ## [[**Methods**]{.underline}]{.smallcaps}
@@ -247,8 +248,6 @@ population_threshold <- 75000000  # 75 million
 
 large_countries <- df %>%
   filter(Population.2022. > population_threshold)
-
-print(large_countries)
 ```
 
 ## [Impact of International Agreements]{.smallcaps}
@@ -544,9 +543,9 @@ of the undefined group.
 ```{r}
 # arrange in ascending order based on coTons column
 sorted2020 <- df2020 %>% arrange(coTons)
-sorted2020
+head(sorted2020)
 mostPolluting <- df2020[order(-df2020$coTons), ][1, ]
-mostPolluting
+head(mostPolluting)
 
 ```
 
