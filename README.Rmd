@@ -317,29 +317,6 @@ To understand the geographical distribution of emissions in 2020, we
 created a world map highlighting each country's contribution.
 
 ```{r}
-world_map <- map_data("world")
-
-world_map <- world_map %>%
-  mutate(region = case_when(
-    region == "UK" ~ "United Kingdom",
-    region == "USA" ~ "United States",
-    TRUE ~ region
-  ))
-
-# Filter the data for the year 2020
-df_2020 <- df %>% filter(Year == 2020)
-
-# Perform inner join with the world map data
-merged_data <- inner_join(world_map, df_2020, by = c("region" = "Country"))
-
-# Plot the global distribution of CO2 emissions for the year 2020
-ggplot(merged_data, aes(x = long, y = lat, group = group, fill = CO2.emission..Tons.)) +
-  geom_polygon(color = "white") +
-  labs(title = "Global Distribution of CO2 Emissions (Year 2020)",
-       fill = "CO2 Emissions (Tons)")
-```
-
-```{r}
 # Load world map data
 world_map <- map_data("world")
 
@@ -365,6 +342,8 @@ ggplot(merged_data, aes(x = long, y = lat, group = group, fill = CO2.emission..T
   theme_map()
 
 ```
+*The map provides a visual representation of the global distribution of CO2 emissions, allowing for the identification of regions or countries with notable emission levels. Patterns and concentrations of high or low emissions can be observed, providing insights into the geographical variations of carbon dioxide output*
+
 
 ```{r}
 valid_country_codes <- df %>%
@@ -398,6 +377,8 @@ ggplot(china_us_data, aes(x = Year, y = CO2.emission..Tons., color = Country)) +
        y = "CO2 Emissions (Tons)",
        color = "Country")
 ```
+*Comparing CO2 US and China for the past 60 years shows a general trend where the emissions rate for China is climbing faster than the US. This lines up with historical context as companies tend to move manufacturing plants to countries with looser labor laws and restrictions.* 
+
 
 ### [Factors Influencing Emissions in the United States]{.smallcaps}
 
@@ -411,13 +392,13 @@ us_data <- wdi_data %>%
 # Plot population vs. emissions rate for the United States
 ggplot(us_data, aes(x = SP.POP.TOTL, y = CO2.emission..Tons.)) +
   geom_point() +
-  labs(title = "Population vs. Emissions Rate: United States",
+  labs(title = "Population vs. Emissions: United States",
        x = "Population",
-       y = "Emissions Rate")
+       y = "Emissions")
 
 ggplot(us_data, aes(x = SP.POP.TOTL, y = CO2.emission..Tons. / SP.POP.TOTL)) +
   geom_point() +
-  labs(title = "Population vs. Emissions Rate: United States",
+  labs(title = "Population vs. Emissions: United States",
        x = "Population",
        y = "Emissions Rate (Tons per capita)")
 ```
@@ -454,6 +435,7 @@ ggplot(us_data, aes(x = NY.GDP.MKTP.KD, y = CO2.emission..Tons.)) +
        x = "GDP",
        y = "CO2 Emissions (Tons)")
 ```
+*This graph higlights a trend where an increase in GDP contributes to increased C02 emissions*
 
 ### CO2 Emissions Comparison
 
@@ -658,12 +640,81 @@ ggplot(area2020, aes(x = reorder(Country, -coByArea), y = coByArea, fill = Count
   scale_fill_brewer(palette = "Set3") + scale_y_continuous(labels = scales::comma)
 
 
-
 ```
 
 **Developing vs Developed Countries**
 
+```{r}
 
+gdp_threshold <- 25000
+
+df_categorized <- wdi_data %>%
+  mutate(GDP_per_capita = NY.GDP.MKTP.KD / SP.POP.TOTL)
+
+
+df_categorized <- df_categorized %>%
+  mutate(development_status = ifelse(GDP_per_capita >= gdp_threshold, "Developed", "Developing"))
+
+df_categorized <- na.omit(df_categorized)
+
+developed_countries <- df_categorized %>%
+  filter(development_status == "Developed")
+
+developing_countries <- df_categorized %>%
+  filter(development_status == "Developing")
+
+```
+
+
+```{r}
+emissions_2020 <- df_categorized %>%
+  filter(Year == 2020)
+
+top_developed <- emissions_2020 %>%
+  filter(development_status == "Developed") %>%
+  top_n(10, wt = CO2.emission..Tons.)
+
+top_developing <- emissions_2020 %>%
+  filter(development_status == "Developing") %>%
+  top_n(10, wt = CO2.emission..Tons.)
+
+# Plot emissions for the top 10 developed countries in 2020
+developed_plot <- ggplot(top_developed, aes(x = reorder(Country, -CO2.emission..Tons.), y = CO2.emission..Tons., fill = development_status)) +
+  geom_bar(stat = "identity") +
+  labs(title = "Top 10 CO2 Emissions in 2020: Developed Countries",
+       x = "Country",
+       y = "CO2 Emissions (Tons)",
+       fill = "Development Status") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  coord_flip()
+
+# Plot emissions for the top 10 developing countries in 2020
+developing_plot <- ggplot(top_developing, aes(x = reorder(Country, -CO2.emission..Tons.), y = CO2.emission..Tons., fill = development_status)) +
+  geom_bar(stat = "identity") +
+  labs(title = "Top 10 CO2 Emissions in 2020: Developing Countries",
+       x = "Country",
+       y = "CO2 Emissions (Tons)",
+       fill = "Development Status") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  coord_flip()
+
+print(developed_plot)
+print(developing_plot)
+```
+```{r}
+emissions_2020_excluded <- anti_join(emissions_2020, top_developed, by = c("Country", "development_status"))
+emissions_2020_excluded <- anti_join(emissions_2020_excluded, top_developing, by = c("Country", "development_status"))
+
+# Scatter plot of GDP (Per Capita) vs. CO2 emissions for 2020 (excluding top 10)
+ggplot(emissions_2020_excluded, aes(x = GDP_per_capita, y = CO2.emission..Tons., color = development_status)) +
+  geom_point() +
+  labs(title = "GDP (Per Capita) vs. CO2 Emissions in 2020 (Excluding Top 10):\nDeveloped vs. Developing Countries",
+       x = "GDP (Per Capita)",
+       y = "CO2 Emissions (Tons)",
+       color = "Development Status")
+
+```
+*Analyzing the relationship between GDP (Per Capita) and CO2 emissions while distinguishing between developing and developed countries offers insights into the impact of climate agreements. Traditionally, nations with higher GDP have often taken the lead in establishing and adhering to climate goals, a trend that aligns with the observations depicted in the plot.*
 
 
 ## [[**Conclusion**]{.underline}]{.smallcaps}
