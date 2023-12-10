@@ -9,6 +9,7 @@ editor_options:
 Repo for DS202 final project
 
 ```{r}
+library(WDI)
 library(dplyr)
 library(tidyverse)
 ```
@@ -166,7 +167,80 @@ highest_population_emissions<-ggplot(emissions_2020, aes(x=Country, y=CO2.emissi
 
 print(highest_population_emissions)
 ```
-```{r}
 
+```{r}
+world_map <- map_data("world")
+
+world_map <- world_map %>%
+  mutate(region = case_when(
+    region == "UK" ~ "United Kingdom",
+    region == "USA" ~ "United States",
+    TRUE ~ region
+  ))
+
+# Filter the data for the year 2020
+df_2020 <- df %>% filter(Year == 2020)
+
+# Perform inner join with the world map data
+merged_data <- inner_join(world_map, df_2020, by = c("region" = "Country"))
+
+# Plot the global distribution of CO2 emissions for the year 2020
+ggplot(merged_data, aes(x = long, y = lat, group = group, fill = CO2.emission..Tons.)) +
+  geom_polygon(color = "white") +
+  labs(title = "Global Distribution of CO2 Emissions (Year 2020)",
+       fill = "CO2 Emissions (Tons)")
+```
+```{r}
+valid_country_codes <- df %>%
+  distinct(Code) %>%
+  pull(Code)
+
+
+wdi_data <- WDI(country = valid_country_codes, indicator =c("SP.POP.TOTL", "NY.GDP.MKTP.KD"))
+
+```
+```{r}
+wdi_data <- left_join(df, wdi_data, by = c("Code" = "iso2c", "Year" = "year"))
+
+# WDI only contains population data from 1960
+wdi_data <- wdi_data %>%
+  filter(Year >= 1960)
+```
+
+```{r}
+china_us_data <- wdi_data %>%
+  filter(Country %in% c("China", "United States"))
+
+# Plot the pollution rates for China and the US
+ggplot(china_us_data, aes(x = Year, y = CO2.emission..Tons., color = Country)) +
+  geom_line() +
+  labs(title = "CO2 Emissions Comparison: China vs. United States",
+       x = "Year",
+       y = "CO2 Emissions (Tons)",
+       color = "Country")
+```
+```{r}
+us_data <- wdi_data %>%
+  filter(Country == "United States")
+
+# Plot population vs. emissions rate for the United States
+ggplot(us_data, aes(x = SP.POP.TOTL, y = CO2.emission..Tons.)) +
+  geom_point() +
+  labs(title = "Population vs. Emissions Rate: United States",
+       x = "Population",
+       y = "Emissions Rate")
+
+ggplot(us_data, aes(x = SP.POP.TOTL, y = CO2.emission..Tons. / SP.POP.TOTL)) +
+  geom_point() +
+  labs(title = "Population vs. Emissions Rate: United States",
+       x = "Population",
+       y = "Emissions Rate (Tons per capita)")
+```
+```{r}
+ggplot(us_data, aes(x = NY.GDP.MKTP.KD, y = CO2.emission..Tons.)) +
+  geom_point() +
+  labs(title = "GDP vs. CO2 Emissions: United States",
+       x = "GDP",
+       y = "CO2 Emissions (Tons)")
 ```
 
