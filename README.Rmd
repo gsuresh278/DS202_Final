@@ -310,7 +310,10 @@ emissions_2020 <- df %>%
   slice_max(Population.2022., n = 20)
 
 highest_population_emissions<-ggplot(emissions_2020, aes(x=Country, y=CO2.emission..Tons., col=Country)) +
-  geom_point(size = 5) + theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 1))
+  geom_point(size = 5) + theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 1))+
+    labs(title = "Emissions of the Top 20 Most Populated Countries in 2020",
+       x = "Country",
+       y = "CO2 Emission (Tons)")
 
 print(highest_population_emissions)
 ```
