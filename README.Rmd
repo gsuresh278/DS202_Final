@@ -26,9 +26,9 @@ crafting policies and strategies to mitigate their impact. In this
 project, we explore the changes in CO2 emissions overtime, focusing on
 different aspects such as the comparison of emission patterns between
 certain countries, impact of international agreements, and specific
-countries with the highest emissions. Along with that, we showed comparisons
-of CO2 emissions over time and the difference in emissions between developed
-and developing countries.
+countries with the highest emissions. Along with that, we showed
+comparisons of CO2 emissions over time and the difference in emissions
+between developed and developing countries.
 
 ## ~[[**Data**]{.underline}]{.smallcaps}~
 
@@ -227,20 +227,34 @@ industrializers and compare their patterns with currently developing
 countries.
 
 ```{r}
+
+# Filter countries with Min_Year < 1900
 selected_countries <- min_year_data %>%
   filter(Min_Year < 1900)
 
+# Filter data for selected countries
 selected_df <- df %>%
   filter(Country %in% selected_countries$Country)
 
-print(length(unique(selected_df$Country)))
+# Get the top 10 countries based on some criterion (e.g., average CO2 emissions)
+top_10_countries <- selected_df %>%
+  group_by(Country) %>%
+  summarize(avg_emission = mean(CO2.emission..Tons.)) %>%
+  top_n(10, wt = avg_emission) %>%
+  pull(Country)
 
-ggplot(selected_df, aes(x = Year, y = CO2.emission..Tons., color = Country)) +
+# Filter the data for the top 10 countries
+selected_df_top10 <- selected_df %>%
+  filter(Country %in% top_10_countries)
+
+# Plotting
+ggplot(selected_df_top10, aes(x = Year, y = CO2.emission..Tons., color = Country)) +
   geom_line() +
-  labs(title = "CO2 Emissions of Countries with Min Year < 1900",
+  labs(title = "Top 10 CO2 Emissions of Countries with Min Year < 1900",
        x = "Year",
        y = "CO2 Emission (Tons)") +
-  theme_minimal()
+  theme_minimal() + scale_y_continuous(labels = scales::comma)
+
 ```
 
 ```{r}
@@ -255,10 +269,10 @@ large_countries <- df %>%
 We investigated whether international agreements have influenced CO2
 emissions by examining emission trends for countries with populations
 exceeding 75 million. The visualizations included vertical lines
-representing the years of key international agreements. The Kyoto Protocol,
-created in 1997, and the Paris Agreement, enacted in 2015, are two
-of the most influential climate agreements to date, so we chose to use
-those as our markers.
+representing the years of key international agreements. The Kyoto
+Protocol, created in 1997, and the Paris Agreement, enacted in 2015, are
+two of the most influential climate agreements to date, so we chose to
+use those as our markers.
 
 ### [CO2 Emissions Compared to Dates of International Agreements]{.smallcaps}
 
@@ -273,7 +287,7 @@ agreements_years <- ggplot(countries_agreements, aes(x = Year, y = CO2.emission.
   labs(title = "CO2 Emissions Compared to Dates of International Agreements",
        x = "Year",
        y = "CO2 Emission (Tons)") +
-  theme_minimal()
+  theme_minimal() + scale_y_continuous(labels = scales::comma)
 agreements_years + geom_vline(xintercept=1997)
 agreements_years + geom_vline(xintercept=2015)
 ```
@@ -297,7 +311,7 @@ most_emissions_graph<-ggplot(largest_emissions, aes(x=Country, y=CO2.emission..T
        x = "Country",
        y = "CO2 Emission (Tons)") +
   theme_minimal() +
-    theme(axis.text.x = element_text(angle = 90))
+    theme(axis.text.x = element_text(angle = 90)) + scale_y_continuous(labels = scales::comma)
 
 
 
@@ -310,7 +324,7 @@ emissions_2020 <- df %>%
   slice_max(Population.2022., n = 20)
 
 highest_population_emissions<-ggplot(emissions_2020, aes(x=Country, y=CO2.emission..Tons., col=Country)) +
-  geom_point(size = 5) + theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 1))+
+  geom_point(size = 5) + theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 1)) + scale_y_continuous(labels = scales::comma)
     labs(title = "Emissions of the Top 20 Most Populated Countries in 2020",
        x = "Country",
        y = "CO2 Emission (Tons)")
@@ -326,7 +340,6 @@ created a world map highlighting each country's contribution.
 ```{r}
 # Load world map data
 world_map <- map_data("world")
-
 # Rename regions for consistency
 world_map <- world_map %>%
   mutate(region = case_when(
@@ -334,19 +347,17 @@ world_map <- world_map %>%
     region == "USA" ~ "United States",
     TRUE ~ region
   ))
-
 # Filter the data for the year 2020
 df_2020 <- df %>% filter(Year == 2020)
-
 # Perform inner join with the world map data
 merged_data <- inner_join(world_map, df_2020, by = c("region" = "Country"))
-
 # Plot the global distribution of CO2 emissions for the year 2020
 ggplot(merged_data, aes(x = long, y = lat, group = group, fill = CO2.emission..Tons.)) +
   geom_polygon(color = "white") +
   labs(title = "Global Distribution of CO2 Emissions (Year 2020)",
        fill = "CO2 Emissions (Tons)") +
   theme_map()
+
 
 ```
 
@@ -386,7 +397,7 @@ ggplot(china_us_data, aes(x = Year, y = CO2.emission..Tons., color = Country)) +
   labs(title = "CO2 Emissions Comparison: China vs. United States",
        x = "Year",
        y = "CO2 Emissions (Tons)",
-       color = "Country")
+       color = "Country") + scale_y_continuous(labels = scales::comma)
 ```
 
 *Comparing CO2 US and China for the past 60 years shows a general trend
@@ -441,11 +452,6 @@ ggplot(us_data, aes(x = SP.POP.TOTL, y = CO2.emission..Tons.)) +
 ```
 
 ```{r}
-# Assuming wdi_data is your initial dataframe with columns: Country, SP.POP.TOTL, CO2.emission..Tons.
-
-# Filter data for the United States
-# Assuming wdi_data is your initial dataframe with columns: Country, SP.POP.TOTL, CO2.emission..Tons.
-
 # Filter data for the United States
 us_data <- wdi_data %>%
   filter(Country == "United States")
@@ -552,6 +558,15 @@ head(mostPolluting)
 
 ```
 
+### [Top 10 Countries in 2020]{.smallcaps}
+
+Focusing on the top 10 countries with the highest CO2 emissions in the
+year 2020. A subset of the dataset was created by selecting the top 10
+countries with the highest CO2 emissions. It was visualized over the
+course of the year using a line plot with various colors. United States
+shows to be leading, while China is second and just over half of the
+US's emissions.
+
 ```{r}
 # Select the top 10 countries with the highest CO2 emissions in 2020
 top10_2020 <- df2020 %>% arrange(desc(coTons)) %>% head(10)
@@ -569,6 +584,12 @@ ggplot(topCountriesCO2, aes(x = Year, y = coTons, color = Country)) +
 
 
 ```
+
+Here is the start of the timeline throughout the centuries. This is
+starting at the beginning of the dataset, so it's not a full century,
+only spanning 50 years. Around 1760 was the start of the Industrial
+Revolution, which meant an increase in CO2 emissions due to the increase
+of coal to fuel the Industrial Revolution.
 
 ```{r}
 # 18th century
@@ -595,6 +616,11 @@ ggplot(CO2_cent_18, aes(x = Year, y = coTons, color = Country)) +
 
 ```
 
+Next, we have the 19th century. Here we see a drastic change, the United
+States made the top 10 and brought itself to second. Other countries
+made an appearance as well, adding to varying CO2 emissions by the turn
+of the century.
+
 ```{r}
 # 19th century
 cent_19 <- df1 %>% filter(Year >= 1800 & Year <= 1899)
@@ -615,9 +641,15 @@ ggplot(CO2_cent_19, aes(x = Year, y = coTons, color = Country)) +
   labs(title = "CO2 Emissions of Top 10 Countries in the 19th Century",
        x = "Year",
        y = "CO2 Tons") + scale_y_continuous(labels = scales::comma)
-
-
 ```
+
+Now we reach the 1900's, at first glance the graph seems like the other
+countries didn't add much to the CO2 emissions and the US just
+skyrocketed. If you look at the numbers on the y-axis, you will see that
+the US is just an outlier, and the other countries have actually doubled
+their CO2. Many factors could lead to this jump. One of them could be
+the post World-War II baby boom, an increase in population equals an
+increase in CO2 emissions.
 
 ```{r}
 # 20th century
@@ -645,6 +677,12 @@ ggplot(CO2_cent_20, aes(x = Year, y = coTons, color = Country)) +
 
 ```
 
+While this graph only shows 20 years of the 21st century, it shows how
+fast China is branching away from the other 8 leading countries and
+catching up to the United States. In less than 15 years (starting from
+2015), China doubled their CO2 emissions, making to almost half of what
+the US has.
+
 ```{r}
 # Filter the original dataset for the 21st century
 cent_21 <- df1 %>% filter(Year >= 2000 & Year <= 2022)
@@ -670,6 +708,14 @@ ggplot(CO2_cent_21, aes(x = Year, y = coTons, color = Country)) +
 
 ```
 
+### [CO2 Emissions per Area]{.smallcaps}
+
+This graph shows the CO2 emissions per area for the top countries in
+2020. Leading is the United Kingdom, their high figure suggests a
+concentrated impact on the environment despite its relatively smaller
+landmass. While on the opposite end is Canada, despite its expansive
+landmass, they produce less CO2 per Area than smaller countries.
+
 ```{r}
 area2020 = top10_2020
 area2020$coByArea <- area2020$coTons / area2020$Area
@@ -687,7 +733,7 @@ ggplot(area2020, aes(x = reorder(Country, -coByArea), y = coByArea, fill = Count
 
 ```
 
-**Developing vs Developed Countries**
+### [**Developing vs Developed Countries**]{.smallcaps}
 
 ```{r}
 
