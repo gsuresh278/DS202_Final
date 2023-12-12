@@ -161,8 +161,8 @@ is a 13.02% positive correlation between "Year" and
 
 ### [Unique Countries:]{.smallcaps}
 
-The unique countries present in the dataset are extracted and the head is 
-printed.
+The unique countries present in the dataset are extracted and the head
+is printed.
 
 This provides a list of distinct countries represented in the dataset.
 
@@ -186,9 +186,9 @@ df <- df %>%
 ### [Determining Minimum CO2 Emission Years:]{.smallcaps}
 
 For each country, the year with the minimum CO2 emissions is determined,
-and the corresponding data is summarized. This results in a dataset that 
-provides insights into the earliest year with non-zero CO2 emissions for each
-country, for which we printed the head.
+and the corresponding data is summarized. This results in a dataset that
+provides insights into the earliest year with non-zero CO2 emissions for
+each country, for which we printed the head.
 
 ```{r}
 min_year_data <- df %>%
@@ -318,9 +318,9 @@ most_emissions_graph<-ggplot(largest_emissions, aes(x=Country, y=CO2.emission..T
 print(most_emissions_graph)
 ```
 
-Next, we decided to compare emissions from countries with the highest populations.
-This would allow us to compare data and see whether countries with high populations
-also tend to create more CO2 emissions.
+Next, we decided to compare emissions from countries with the highest
+populations. This would allow us to compare data and see whether
+countries with high populations also tend to create more CO2 emissions.
 
 ```{r}
 emissions_2020 <- df %>%
@@ -432,52 +432,6 @@ ggplot(us_data, aes(x = SP.POP.TOTL, y = CO2.emission..Tons. / SP.POP.TOTL)) +
        y = "Emissions Rate (Tons per capita)")
 ```
 
-```{r}
-# Filter data for the United States
-us_data <- wdi_data %>%
-  filter(Country == "United States")
-
-# Create a new variable for faceting
-facet_var <- rep(c("Total", "Per Capita"), length.out = nrow(us_data))
-
-# Add the facet_var variable to the dataset
-us_data <- mutate(us_data, facet_var = facet_var)
-
-# Plot population vs. emissions rate for the United States
-ggplot(us_data, aes(x = SP.POP.TOTL, y = CO2.emission..Tons.)) +
-  geom_point() +
-  labs(title = "Population vs. Emissions Rate: United States",
-       x = "Population",
-       y = "Emissions Rate") +
-  facet_wrap(~facet_var, scales = "free_y", ncol = 1) +
-  ylab(NULL) +
-  theme(strip.background = element_blank(), strip.text.x = element_blank()) + scale_y_continuous(labels = scales::comma)
-
-```
-
-```{r}
-# Filter data for the United States
-us_data <- wdi_data %>%
-  filter(Country == "United States")
-
-# Create a new variable for faceting
-facet_var <- rep(c("Total", "Per Capita"), length.out = nrow(us_data))
-
-# Add the facet_var variable to the dataset
-us_data <- mutate(us_data, facet_var = facet_var)
-
-# Plot population vs. emissions rate for the United States
-ggplot(us_data, aes(x = SP.POP.TOTL, y = CO2.emission..Tons.)) +
-  geom_point() +
-  labs(title = "Population vs. Emissions Rate: United States",
-       x = "Population") +
-  facet_grid(facet_var ~ ., scales = "free_y", switch = 'y') +
-  ylab("Emissions Rate (Total)") +
-  theme(strip.background = element_blank(), strip.text.x = element_blank()) +
-  scale_y_continuous(labels = scales::comma) +
-  theme(strip.background = element_blank(), strip.text.x = element_blank())
-
-```
 
 ### [GDP vs. CO2 Emissions: United States]{.smallcaps}
 
