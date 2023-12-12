@@ -318,6 +318,10 @@ most_emissions_graph<-ggplot(largest_emissions, aes(x=Country, y=CO2.emission..T
 print(most_emissions_graph)
 ```
 
+Next, we decided to compare emissions from countries with the highest populations.
+This would allow us to compare data and see whether countries with high populations
+also tend to create more CO2 emissions.
+
 ```{r}
 emissions_2020 <- df %>%
   filter(Year==2020) %>%
